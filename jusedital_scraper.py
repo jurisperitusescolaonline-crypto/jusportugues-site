@@ -82,12 +82,20 @@ def fetch(url, timeout=15):
     req = urllib.request.Request(
         url,
         headers={
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-            'Accept': 'application/rss+xml, application/xml, text/xml, */*',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'pt-BR,pt;q=0.9,en;q=0.8',
+            'Accept-Encoding': 'gzip, deflate',
+            'Connection': 'keep-alive',
+            'Cache-Control': 'no-cache',
         }
     )
+    import gzip
     resp = urllib.request.urlopen(req, timeout=timeout)
-    return resp.read().decode('utf-8', errors='ignore')
+    raw = resp.read()
+    if resp.info().get('Content-Encoding') == 'gzip':
+        raw = gzip.decompress(raw)
+    return raw.decode('utf-8', errors='ignore')
 
 def classify_area(text):
     t = text.lower()
